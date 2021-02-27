@@ -5,10 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".profile.LoginActivity"
-    android:orientation="vertical"
     android:background="@color/background"
-    android:padding="20dp">
+    android:orientation="vertical"
+    android:padding="20dp"
+    tools:context=".profile.LoginActivity">
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -21,48 +21,51 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="0dp"
             android:layout_marginBottom="20dp"
             android:orientation="vertical">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/appName"
-        android:layout_width="146dp"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        android:fontFamily="@font/aladin"
-        android:text="Safety \n With \n Security"
-        android:textAlignment="center"
-        android:textColor="#303F9F"
-        android:textSize="30sp"
-        android:transitionName="welcomeTextTran" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-    <ImageView
-        android:id="@+id/logoImage"
-        android:layout_width="171dp"
-        android:layout_height="123dp"
-        android:layout_gravity="left"
-        android:src="@drawable/shield_icon"
-        android:transitionName="logo_image" />
-</LinearLayout>
+                <TextView
+                    android:id="@+id/welcomeText"
+                    android:layout_width="146dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/aladin"
+                    android:text="Safety \n With \n Security"
+                    android:textAlignment="center"
+                    android:textColor="#303F9F"
+                    android:textSize="30sp"
+                    android:transitionName="welcomeTextTran" />
+
+                <ImageView
+                    android:id="@+id/logoImage"
+                    android:layout_width="171dp"
+                    android:layout_height="123dp"
+                    android:layout_gravity="left"
+                    android:src="@drawable/shield_icon"
+                    android:transitionName="logo_image" />
+            </LinearLayout>
 
 
             <TextView
-                android:id="@+id/welcomeText"
+                android:id="@+id/logoDescription"
                 android:layout_width="286dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
@@ -74,7 +77,6 @@
                 android:transitionName="welcomeTextTran" />
 
             <TextView
-                android:id="@+id/logoDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
@@ -88,9 +90,9 @@
                 android:id="@+id/email"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:transitionName="username_tran"
                 android:layout_height="wrap_content"
-                android:hint="Email">
+                android:hint="Email"
+                android:transitionName="username_tran">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/emailTextField"
@@ -127,9 +129,10 @@
                 android:layout_margin="5dp"
                 android:background="#00000000"
                 android:elevation="0dp"
-                android:textSize="12sp"
                 android:text="Forget Password?"
-                android:textColor="#000" />
+                android:textColor="#000"
+                android:textSize="12sp" />
+
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/loginButton"
                 android:layout_width="match_parent"
@@ -142,9 +145,7 @@
                 android:text="Log In"
                 android:textColor="#fff"
                 android:transitionName="button_tran"
-                app:cornerRadius="8dp"
-                />
-
+                app:cornerRadius="8dp" />
 
 
             <Button
@@ -159,34 +160,38 @@
                 android:text="New User? SIGN UP"
                 android:textColor="#000"
                 android:transitionName="login_signup_tran" />
+
             <LinearLayout
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_width="97dp"
-                    android:layout_height="wrap_content"
-                    android:background="#707070"
-                    android:paddingBottom="3dp"/>
-                <TextView
-                    android:textColor="#1E1E1E"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Or Login With"/>
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp">
 
                 <LinearLayout
+                    android:layout_width="97dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
+                    android:background="#707070"
+                    android:paddingBottom="3dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:text="Or Login With"
+                    android:textColor="#1E1E1E" />
+
+                <LinearLayout
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
                     android:background="#707070"
-                    android:paddingBottom="3dp"/>
+                    android:paddingBottom="3dp" />
             </LinearLayout>
+
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -206,9 +211,9 @@
                     app:cardElevation="6dp">
 
                     <LinearLayout
-                        android:background="@color/background"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:background="@color/background"
                         android:gravity="center"
                         android:orientation="horizontal"
                         android:padding="5dp">
@@ -230,7 +235,6 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/fbLoginBtn"
                     android:layout_width="77dp"
                     android:layout_height="83dp"
                     android:layout_rowWeight="1"
@@ -240,9 +244,9 @@
                     app:cardElevation="6dp">
 
                     <LinearLayout
-                        android:background="@color/background"
                         android:layout_width="169dp"
                         android:layout_height="match_parent"
+                        android:background="@color/background"
                         android:gravity="center"
                         android:orientation="horizontal"
                         android:padding="5dp">

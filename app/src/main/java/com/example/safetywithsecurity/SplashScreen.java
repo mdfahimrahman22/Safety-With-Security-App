@@ -53,7 +53,7 @@ public class SplashScreen extends AppCompatActivity {
             @Override
             public void run() {
                 if(auth.getCurrentUser()!=null){
-                    intent = new Intent(SplashScreen.this, DashboardMain.class);
+                    intent = new Intent(SplashScreen.this, MainActivity.class);
                     startActivity(intent);
                 }else{
                     intent=new Intent(SplashScreen.this, LoginActivity.class);

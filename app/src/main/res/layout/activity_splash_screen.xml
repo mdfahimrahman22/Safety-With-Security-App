@@ -67,7 +67,6 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-        android:id="@+id/aust_logo"
         android:layout_width="63dp"
         android:layout_height="49dp"
         android:layout_marginStart="8dp"

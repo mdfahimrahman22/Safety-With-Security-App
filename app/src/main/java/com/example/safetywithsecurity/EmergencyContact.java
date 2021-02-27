@@ -1,13 +1,13 @@
 package com.example.safetywithsecurity;
 
-import android.os.Bundle;
-
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.Bundle;
+
 public class EmergencyContact extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.emergency_contact);
     }
