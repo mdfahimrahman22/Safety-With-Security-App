@@ -37,7 +37,7 @@ import com.example.safetywithsecurity.SettingsFragment;
 
 public class HomeFragment extends Fragment implements LocationListener {
 
-    private CardView myLocationButton, emergencyCallButton, emergencyMessageButton, securityCallButton, policeStationsNearMeButton, callAmbulanceButton, bloodDonateButton, needBloodButton;
+    private CardView myLocationButton,hospitalButton, emergencyCallButton, emergencyMessageButton, securityCallButton, policeStationsNearMeButton, callAmbulanceButton, bloodDonateButton, needBloodButton;
     LocationManager locationManager;
     double myLatitude, myLongitude;
 
@@ -87,8 +87,22 @@ public class HomeFragment extends Fragment implements LocationListener {
                 callAmbulance();
             }
         });
+        hospitalButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hospitalsNearMe();
+            }
+        });
 
         return root;
+    }
+
+    private void hospitalsNearMe() {
+
+        Uri uri = Uri.parse("google.navigation:q=Hospital Near Me");
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        intent.setPackage("com.google.android.apps.maps");
+        startActivity(intent);
     }
 
     private void callAmbulance() {
@@ -172,6 +186,8 @@ public class HomeFragment extends Fragment implements LocationListener {
         policeStationsNearMeButton = view.findViewById(R.id.policeStationsNearMeButton);
         bloodDonateButton = view.findViewById(R.id.bloodDonateButton);
         needBloodButton = view.findViewById(R.id.needBloodButton);
+        hospitalButton = view.findViewById(R.id.myHospitalButton);
+
     }
 
     @Override
