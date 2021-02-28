@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -27,9 +28,12 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.preference.EditTextPreference;
+import androidx.preference.PreferenceManager;
 
 import com.example.safetywithsecurity.DashboardMain;
 import com.example.safetywithsecurity.R;
+import com.example.safetywithsecurity.SettingsFragment;
 
 public class HomeFragment extends Fragment implements LocationListener {
 
@@ -39,6 +43,7 @@ public class HomeFragment extends Fragment implements LocationListener {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         getComponentIds(root);
         checkLocationPermission();
@@ -87,7 +92,10 @@ public class HomeFragment extends Fragment implements LocationListener {
     }
 
     private void callAmbulance() {
-        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", "999", null));
+        SharedPreferences sp;
+        sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String ambulanceNumber = sp.getString("ambulanceNumber" , "999");
+        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", ambulanceNumber, null));
         startActivity(intent);
     }
 
@@ -95,8 +103,15 @@ public class HomeFragment extends Fragment implements LocationListener {
         Intent smsIntent = new Intent(Intent.ACTION_VIEW);
         smsIntent.setData(Uri.parse("smsto:"));
         smsIntent.setType("vnd.android-dir/mms-sms");
-        smsIntent.putExtra("address", new String("01615990017"));
-        smsIntent.putExtra("sms_body", "I am in danger. Please find me in this location: https://www.google.com/maps/?q=" + myLatitude + "," + myLongitude);
+
+        SharedPreferences sp;
+        sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String contactNumber = sp.getString("emergencyContact" , "999");
+
+        String relation = sp.getString("contactRelation" , "Dear");
+
+        smsIntent.putExtra("address", new String(contactNumber));
+        smsIntent.putExtra("sms_body", "Hi "+relation+"\nI am in danger. Please find me in this location: https://www.google.com/maps/?q=" + myLatitude + "," + myLongitude);
 
         try {
             startActivity(smsIntent);
@@ -141,7 +156,10 @@ public class HomeFragment extends Fragment implements LocationListener {
     }
 
     private void emergencyCall() {
-        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", "01615990017", null));
+        SharedPreferences sp;
+        sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String contactNumber = sp.getString("emergencyContact" , "999");
+        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", contactNumber, null));
         startActivity(intent);
     }
 

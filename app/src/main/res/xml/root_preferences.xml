@@ -2,12 +2,22 @@
 
     <PreferenceCategory app:title="Emergency Numbers">
 
+
         <EditTextPreference
+
             app:key="emergencyContact"
             app:title="Add Emergency Contact"
             app:icon="@drawable/ic_emergency_contact_icon"
             app:summaryOn="Emergency Contact Updated."
             app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:key="contactRelation"
+            app:title="Emergency Contact's Relation"
+            app:icon="@drawable/ic_emergency_contact_icon"
+            app:summaryOn="Emergency Contact Updated."
+            app:useSimpleSummaryProvider="true"
+            />
+
         <EditTextPreference
             app:key="securityNumber"
             app:title="Add National Security Number"
