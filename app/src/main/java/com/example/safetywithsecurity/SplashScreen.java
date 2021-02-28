@@ -53,7 +53,7 @@ public class SplashScreen extends AppCompatActivity {
             @Override
             public void run() {
                 if(auth.getCurrentUser()!=null){
-                    intent = new Intent(SplashScreen.this, MainActivity.class);
+                    intent = new Intent(SplashScreen.this, DashboardMain.class);
                     startActivity(intent);
                 }else{
                     intent=new Intent(SplashScreen.this, LoginActivity.class);
@@ -63,7 +63,7 @@ public class SplashScreen extends AppCompatActivity {
                     ActivityOptions options=ActivityOptions.makeSceneTransitionAnimation(SplashScreen.this,pairs);
                     startActivity(intent,options.toBundle());
                 }
-
+                finish();
             }
         },SPLASH_SCREEN);
     }

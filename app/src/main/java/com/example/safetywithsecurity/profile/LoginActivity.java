@@ -15,7 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.safetywithsecurity.MainActivity;
+import com.example.safetywithsecurity.DashboardMain;
 import com.example.safetywithsecurity.Models.UserProfile;
 import com.example.safetywithsecurity.R;
 import com.example.safetywithsecurity.databinding.ActivityLoginBinding;
@@ -89,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         progressBar.setVisibility(View.INVISIBLE);
-                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                        Intent intent = new Intent(LoginActivity.this, DashboardMain.class);
                                         startActivity(intent);
                                         finish();
                                     } else {
@@ -149,7 +149,7 @@ public class LoginActivity extends AppCompatActivity {
                             users.setPhone(user.getPhoneNumber());
                             database.getReference("Users").child(user.getUid()).setValue(users);
                             progressBar.setVisibility(View.INVISIBLE);
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            Intent intent = new Intent(LoginActivity.this, DashboardMain.class);
                             startActivity(intent);
                             finish();
 //                            updateUI(user);
