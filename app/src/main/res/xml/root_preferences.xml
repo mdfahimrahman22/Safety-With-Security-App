@@ -2,21 +2,20 @@
 
     <PreferenceCategory app:title="Emergency Numbers">
 
+        <EditTextPreference
+            app:key="contactRelation"
+            app:title="Emergency Contact's Relation"
+            app:icon="@drawable/ic_contact_relationship_icon"
+            app:summaryOn="Emergency Contact Updated."
+            app:useSimpleSummaryProvider="true"
+            />
 
         <EditTextPreference
-
             app:key="emergencyContact"
             app:title="Add Emergency Contact"
             app:icon="@drawable/ic_emergency_contact_icon"
             app:summaryOn="Emergency Contact Updated."
             app:useSimpleSummaryProvider="true" />
-        <EditTextPreference
-            app:key="contactRelation"
-            app:title="Emergency Contact's Relation"
-            app:icon="@drawable/ic_emergency_contact_icon"
-            app:summaryOn="Emergency Contact Updated."
-            app:useSimpleSummaryProvider="true"
-            />
 
         <EditTextPreference
             app:key="securityNumber"
@@ -36,24 +35,20 @@
     <PreferenceCategory app:title="App Settings">
         <SwitchPreferenceCompat
             app:key="bloodNeedNotify"
-            app:title="Notify me when someone needs blood" />
+            app:title="Notify On Blood Need"
+            app:defaultValue="true"
+            app:icon="@drawable/ic_blood_donation"
+            app:summaryOn="Notify me when someone needs blood"
+            app:summaryOff="Not able to donate blood."/>
         <ListPreference
             app:defaultValue="light"
             app:entries="@array/theme_entries"
             app:entryValues="@array/theme_values"
             app:key="appTheme"
             app:title="App Theme"
+            app:icon="@drawable/ic_app_theme_settings_icon"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
-    <PreferenceCategory app:title="@string/sync_header">
-        <ListPreference
-            app:defaultValue="reply"
-            app:entries="@array/reply_entries"
-            app:entryValues="@array/reply_values"
-            app:key="reply"
-            app:title="@string/reply_title"
-            app:useSimpleSummaryProvider="true" />
 
-    </PreferenceCategory>
 
 </PreferenceScreen>

@@ -1,12 +1,16 @@
 package com.example.safetywithsecurity;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
@@ -27,6 +31,8 @@ import com.google.firebase.database.DatabaseReference;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -35,6 +41,7 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.preference.PreferenceManager;
 
 public class DashboardMain extends AppCompatActivity implements LocationListener {
 
@@ -44,7 +51,7 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
     private GoogleSignInOptions gso;
     private DatabaseReference databaseReference;
     NavController navController;
-
+    double myLatitude, myLongitude;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,12 +100,16 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
                         navController.navigate(R.id.nav_home);
                         drawer.closeDrawer(GravityCompat.START);
                         return true;
-                    case R.id.nav_call_999:
+                    case R.id.nav_security_call:
                         securityCall();
                         drawer.closeDrawer(GravityCompat.START);
                         return true;
                     case R.id.nav_emergency_call:
                         emergencyCall();
+                        drawer.closeDrawer(GravityCompat.START);
+                        return true;
+                    case R.id.nav_emergency_msg:
+                        sendEmergencyMessage();
                         drawer.closeDrawer(GravityCompat.START);
                         return true;
                     case R.id.nav_police_stations:
@@ -119,7 +130,29 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
             }
         });
     }
+    private void sendEmergencyMessage() {
+        Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+        smsIntent.setData(Uri.parse("smsto:"));
+        smsIntent.setType("vnd.android-dir/mms-sms");
 
+        SharedPreferences sp;
+        sp = PreferenceManager.getDefaultSharedPreferences(DashboardMain.this.getApplicationContext());
+        String contactNumber = sp.getString("emergencyContact" , "999");
+
+        String relation = sp.getString("contactRelation" , "Dear");
+
+        smsIntent.putExtra("address", new String(contactNumber));
+        smsIntent.putExtra("sms_body", "Hi "+relation+"\nI am in danger. Please find me in this location: https://www.google.com/maps/?q=" + myLatitude + "," + myLongitude);
+
+        try {
+            startActivity(smsIntent);
+            DashboardMain.this.finish();
+            Log.i("Finished sending SMS...", "");
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(DashboardMain.this.getApplicationContext(),
+                    "SMS faild, please try again later.", Toast.LENGTH_SHORT).show();
+        }
+    }
     private void policeStationsNearMe() {
         Uri uri = Uri.parse("geo:0, 0?q=Police Stations Near Me");
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
@@ -128,12 +161,17 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
     }
 
     private void securityCall() {
-        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", "999", null));
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(DashboardMain.this.getApplicationContext());
+        String securityNumber = sharedPreferences.getString("securityNumber" , "999");
+        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", securityNumber, null));
         startActivity(intent);
     }
 
     private void emergencyCall() {
-        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", "01615990017", null));
+        SharedPreferences sp;
+        sp = PreferenceManager.getDefaultSharedPreferences(DashboardMain.this.getApplicationContext());
+        String contactNumber = sp.getString("emergencyContact" , "999");
+        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", contactNumber, null));
         startActivity(intent);
     }
 
@@ -204,11 +242,30 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+    int LOCATION_REQUEST_CODE = 100;
+
+    private void checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(DashboardMain.this.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(DashboardMain.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
+        }
+    }
 
     @Override
-    public void onLocationChanged(@NonNull Location location) {
-
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == LOCATION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                return;
+            } else {
+                //permission not granted
+            }
+        }
     }
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        myLatitude = location.getLatitude();
+        myLongitude = location.getLongitude();
+    }
+
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {

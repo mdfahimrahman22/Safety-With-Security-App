@@ -35,17 +35,17 @@
         <activity
             android:name=".SplashScreen"
             android:theme="@style/Theme.SafetyWithSecurity.NoActionBar">
-
-        </activity>
-        <activity
-            android:name=".DashboardMain"
-            android:label="@string/title_activity_dashboard_main"
-            android:theme="@style/Theme.SafetyWithSecurity.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".DashboardMain"
+            android:label="@string/title_activity_dashboard_main"
+            android:theme="@style/Theme.SafetyWithSecurity.NoActionBar" >
+
         </activity>
 
         <meta-data

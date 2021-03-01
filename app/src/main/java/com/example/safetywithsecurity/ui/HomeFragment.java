@@ -98,8 +98,7 @@ public class HomeFragment extends Fragment implements LocationListener {
     }
 
     private void hospitalsNearMe() {
-
-        Uri uri = Uri.parse("google.navigation:q=Hospital Near Me");
+        Uri uri = Uri.parse("google.navigation:q=Hospitals Near Me");
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         intent.setPackage("com.google.android.apps.maps");
         startActivity(intent);
@@ -165,7 +164,9 @@ public class HomeFragment extends Fragment implements LocationListener {
     }
 
     private void securityCall() {
-        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", "999", null));
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String securityNumber = sharedPreferences.getString("securityNumber" , "999");
+        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", securityNumber, null));
         startActivity(intent);
     }
 
