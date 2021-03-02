@@ -27,6 +27,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class MyLocationFragment extends Fragment {
     private static final String TAG = "MyLocationFragment";
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
@@ -59,6 +67,26 @@ public class MyLocationFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_my_location, container, false);
         getLocationPermission();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Api.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        Api api = retrofit.create(Api.class);
+        Call<List<LearnApi>> call = api.getJsonDataFromApi();
+        call.enqueue(new Callback<List<LearnApi>>() {
+            @Override
+            public void onResponse(Call<List<LearnApi>> call, Response<List<LearnApi>> response) {
+                List<LearnApi> APIs = response.body();
+                for(LearnApi api:APIs){
+                    Log.d("title","Title is :"+api.getTitle());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<LearnApi>> call, Throwable t) {
+                Log.d("error",t.getMessage());
+            }
+        });
         return root;
     }
 
@@ -71,6 +99,7 @@ public class MyLocationFragment extends Fragment {
             mapFragment.getMapAsync(callback);
         }
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         myLocationPermissionsGranted = false;
@@ -89,6 +118,7 @@ public class MyLocationFragment extends Fragment {
             }
         }
     }
+
     private void getDeviceLocation() {
         Log.d(TAG, "getDeviceLocation:getting the devices current location");
         myFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
@@ -108,7 +138,7 @@ public class MyLocationFragment extends Fragment {
                         }
                     }
                 });
-            }else{
+            } else {
                 Toast.makeText(getActivity(), "Permission not granted.", Toast.LENGTH_SHORT).show();
             }
 
@@ -135,4 +165,5 @@ public class MyLocationFragment extends Fragment {
             ActivityCompat.requestPermissions(getActivity(), permissions, LOCATION_PERMISSION_REQUEST_CODE);
         }
     }
+//    https://maps.googleapis.com/maps/api/place/details/json?place_id=ChIJRfi17H3HVTcRkneGOy_d6sI&fields=name,rating,formatted_phone_number&key=AIzaSyBxr4dUlOZk8IxKsJQyCh_8cWdj2gBPRFc
 }
