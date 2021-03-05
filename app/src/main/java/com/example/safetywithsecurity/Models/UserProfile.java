@@ -17,6 +17,13 @@ public class UserProfile {
         this.locationLong = locationLong;
         this.userId = userId;
     }
+    public UserProfile(String fullName,String email, String phone,String profilePic,  String bloodGruop) {
+        this.profilePic = profilePic;
+        this.fullName = fullName;
+        this.email = email;
+        this.phone = phone;
+        this.bloodGruop = bloodGruop;
+    }
     //SignUp Constructor
     public UserProfile(String userId,String fullName, String email, String phone, String bloodGruop, String password) {
         this.userId = userId;

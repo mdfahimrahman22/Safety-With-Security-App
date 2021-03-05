@@ -15,8 +15,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.safetywithsecurity.Models.UserProfile;
 import com.example.safetywithsecurity.profile.LoginActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -27,7 +30,13 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -45,12 +54,14 @@ import androidx.preference.PreferenceManager;
 
 public class DashboardMain extends AppCompatActivity implements LocationListener {
 
+    public static UserProfile userProfile;
     private AppBarConfiguration mAppBarConfiguration;
     private FirebaseAuth auth;
     private GoogleSignInClient mGoogleSignInClient;
     private GoogleSignInOptions gso;
-    private DatabaseReference databaseReference;
+
     NavController navController;
+
     double myLatitude, myLongitude;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +72,9 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
             Drawable drawable = getResources().getDrawable(R.color.theme_color);
             actionBar.setBackgroundDrawable(drawable);
         }
+
         auth = FirebaseAuth.getInstance();
+
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -122,6 +135,9 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
             }
         });
     }
+
+
+
     private void sendEmergencyMessage() {
         Intent smsIntent = new Intent(Intent.ACTION_VIEW);
         smsIntent.setData(Uri.parse("smsto:"));

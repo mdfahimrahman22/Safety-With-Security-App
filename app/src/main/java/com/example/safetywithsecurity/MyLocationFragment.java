@@ -67,26 +67,7 @@ public class MyLocationFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_my_location, container, false);
         getLocationPermission();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Api.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        Api api = retrofit.create(Api.class);
-        Call<List<LearnApi>> call = api.getJsonDataFromApi();
-        call.enqueue(new Callback<List<LearnApi>>() {
-            @Override
-            public void onResponse(Call<List<LearnApi>> call, Response<List<LearnApi>> response) {
-                List<LearnApi> APIs = response.body();
-                for(LearnApi api:APIs){
-                    Log.d("title","Title is :"+api.getTitle());
-                }
-            }
 
-            @Override
-            public void onFailure(Call<List<LearnApi>> call, Throwable t) {
-                Log.d("error",t.getMessage());
-            }
-        });
         return root;
     }
 

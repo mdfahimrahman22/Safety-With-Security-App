@@ -37,10 +37,22 @@ import com.example.safetywithsecurity.SettingsFragment;
 
 public class HomeFragment extends Fragment implements LocationListener {
 
-    private CardView myLocationButton,hospitalButton, emergencyCallButton, emergencyMessageButton, securityCallButton, policeStationsNearMeButton, callAmbulanceButton, bloodDonateButton, needBloodButton;
+    private CardView myLocationButton, hospitalButton, emergencyCallButton, emergencyMessageButton, securityCallButton, policeStationsNearMeButton, callAmbulanceButton, bloodDonateButton, needBloodButton;
     LocationManager locationManager;
     double myLatitude, myLongitude;
-
+    private void getComponentIds(View view) {
+        bloodDonateButton = view.findViewById(R.id.bloodDonateButton);
+        needBloodButton = view.findViewById(R.id.needBloodButton);
+        callAmbulanceButton = view.findViewById(R.id.callAmbulanceButton);
+        emergencyMessageButton = view.findViewById(R.id.emergencyMessageButton);
+        myLocationButton = view.findViewById(R.id.myLocationButton);
+        emergencyCallButton = view.findViewById(R.id.emergencyCallButton);
+        securityCallButton = view.findViewById(R.id.securityCallButton);
+        policeStationsNearMeButton = view.findViewById(R.id.policeStationsNearMeButton);
+        bloodDonateButton = view.findViewById(R.id.bloodDonateButton);
+        needBloodButton = view.findViewById(R.id.needBloodButton);
+        hospitalButton = view.findViewById(R.id.myHospitalButton);
+    }
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -93,6 +105,20 @@ public class HomeFragment extends Fragment implements LocationListener {
                 hospitalsNearMe();
             }
         });
+        needBloodButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+                navController.navigate(R.id.nav_need_blood);
+            }
+        });
+        bloodDonateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+                navController.navigate(R.id.nav_donate_blood);
+            }
+        });
 
         return root;
     }
@@ -107,7 +133,7 @@ public class HomeFragment extends Fragment implements LocationListener {
     private void callAmbulance() {
         SharedPreferences sp;
         sp = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String ambulanceNumber = sp.getString("ambulanceNumber" , "999");
+        String ambulanceNumber = sp.getString("ambulanceNumber", "999");
         Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", ambulanceNumber, null));
         startActivity(intent);
     }
@@ -119,12 +145,12 @@ public class HomeFragment extends Fragment implements LocationListener {
 
         SharedPreferences sp;
         sp = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String contactNumber = sp.getString("emergencyContact" , "999");
+        String contactNumber = sp.getString("emergencyContact", "999");
 
-        String relation = sp.getString("contactRelation" , "Dear");
+        String relation = sp.getString("contactRelation", "Dear");
 
         smsIntent.putExtra("address", new String(contactNumber));
-        smsIntent.putExtra("sms_body", "Hi "+relation+"\nI am in danger. Please find me in this location: https://www.google.com/maps/?q=" + myLatitude + "," + myLongitude);
+        smsIntent.putExtra("sms_body", "Hi " + relation + "\nI am in danger. Please find me in this location: https://www.google.com/maps/?q=" + myLatitude + "," + myLongitude);
 
         try {
             startActivity(smsIntent);
@@ -165,7 +191,7 @@ public class HomeFragment extends Fragment implements LocationListener {
 
     private void securityCall() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String securityNumber = sharedPreferences.getString("securityNumber" , "999");
+        String securityNumber = sharedPreferences.getString("securityNumber", "999");
         Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", securityNumber, null));
         startActivity(intent);
     }
@@ -173,23 +199,12 @@ public class HomeFragment extends Fragment implements LocationListener {
     private void emergencyCall() {
         SharedPreferences sp;
         sp = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String contactNumber = sp.getString("emergencyContact" , "999");
+        String contactNumber = sp.getString("emergencyContact", "999");
         Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", contactNumber, null));
         startActivity(intent);
     }
 
-    private void getComponentIds(View view) {
-        callAmbulanceButton = view.findViewById(R.id.callAmbulanceButton);
-        emergencyMessageButton = view.findViewById(R.id.emergencyMessageButton);
-        myLocationButton = view.findViewById(R.id.myLocationButton);
-        emergencyCallButton = view.findViewById(R.id.emergencyCallButton);
-        securityCallButton = view.findViewById(R.id.securityCallButton);
-        policeStationsNearMeButton = view.findViewById(R.id.policeStationsNearMeButton);
-        bloodDonateButton = view.findViewById(R.id.bloodDonateButton);
-        needBloodButton = view.findViewById(R.id.needBloodButton);
-        hospitalButton = view.findViewById(R.id.myHospitalButton);
 
-    }
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
