@@ -33,7 +33,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
     private ActivityLoginBinding binding;
@@ -141,18 +145,32 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("TAG", "signInWithCredential:success");
                             user = auth.getCurrentUser();
-                            UserProfile users=new UserProfile();
-                            users.setUserId(user.getUid());
-                            users.setProfilePic(user.getPhotoUrl().toString());
-                            users.setFullName(user.getDisplayName());
-                            users.setEmail(user.getEmail());
-                            users.setPhone(user.getPhoneNumber());
-                            database.getReference("Users").child(user.getUid()).setValue(users);
+                            String userId = user.getUid();
+                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users/" + userId);
+                            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    UserProfile userProfile = snapshot.getValue(UserProfile.class);
+                                    if(userProfile==null){
+                                        UserProfile users=new UserProfile();
+                                        users.setUserId(user.getUid());
+                                        users.setProfilePic(user.getPhotoUrl().toString());
+                                        users.setFullName(user.getDisplayName());
+                                        users.setEmail(user.getEmail());
+                                        users.setPhone(user.getPhoneNumber());
+                                        database.getReference("Users").child(user.getUid()).setValue(users);
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
                             progressBar.setVisibility(View.INVISIBLE);
                             Intent intent = new Intent(LoginActivity.this, DashboardMain.class);
                             startActivity(intent);
                             finish();
-//                            updateUI(user);
                         } else {
                             progressBar.setVisibility(View.INVISIBLE);
                             // If sign in fails, display a message to the user.

@@ -12,7 +12,7 @@
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/nav_profile"
-        android:name="com.example.safetywithsecurity.ui.ProfileFragment"
+        android:name="com.example.safetywithsecurity.profile.ProfileFragment"
         android:label="@string/profile"
         tools:layout="@layout/fragment_profile" />
     <fragment
