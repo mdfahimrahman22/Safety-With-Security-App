@@ -40,6 +40,8 @@ public class HomeFragment extends Fragment implements LocationListener {
     private CardView myLocationButton, hospitalButton, emergencyCallButton, emergencyMessageButton, securityCallButton, policeStationsNearMeButton, callAmbulanceButton, bloodDonateButton, needBloodButton;
     LocationManager locationManager;
     double myLatitude, myLongitude;
+    Location location;
+    boolean locationPermissionGranted;
     private void getComponentIds(View view) {
         bloodDonateButton = view.findViewById(R.id.bloodDonateButton);
         needBloodButton = view.findViewById(R.id.needBloodButton);
@@ -58,10 +60,12 @@ public class HomeFragment extends Fragment implements LocationListener {
 
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         getComponentIds(root);
+
         checkLocationPermission();
-        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        checkLocationPermission();
-        Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
+       if(locationPermissionGranted){
+           locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+           location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
+       }
         onLocationChanged(location);
         policeStationsNearMeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,6 +173,8 @@ public class HomeFragment extends Fragment implements LocationListener {
     private void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
+        }else{
+            locationPermissionGranted=true;
         }
     }
 
@@ -176,9 +182,10 @@ public class HomeFragment extends Fragment implements LocationListener {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == LOCATION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                locationPermissionGranted=true;
                 return;
             } else {
-                //permission not granted
+                locationPermissionGranted=false;
             }
         }
     }
@@ -209,8 +216,16 @@ public class HomeFragment extends Fragment implements LocationListener {
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        myLatitude = location.getLatitude();
-        myLongitude = location.getLongitude();
+        try{
+            if(locationPermissionGranted){
+                myLatitude = location.getLatitude();
+                myLongitude = location.getLongitude();
+            }else {
+                checkLocationPermission();
+            }
+        }catch (NullPointerException npe){
+
+        }
 
     }
 
