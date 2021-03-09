@@ -62,7 +62,6 @@ public class ProfileFragment extends Fragment {
     private FirebaseDatabase firebaseDatabase;
     private FirebaseAuth auth;
     private ProgressBar progressBar;
-    private AutoCompleteTextView bloodGroupSpinner;
     private UserProfile userProfile;
     private View view;
     private Button updateProfileBtn;
@@ -75,6 +74,8 @@ public class ProfileFragment extends Fragment {
     private StorageReference storageReference;
     private String profilePicImageUrl;
     SpinnerAdapterText adapter;
+    private AutoCompleteTextView bloodGroupSpinner;
+
     private void getComponentIds() {
         profileNameEditText = view.findViewById(R.id.profileFullName);
         bloodGroupEditText = view.findViewById(R.id.bloodGroup);
@@ -97,7 +98,7 @@ public class ProfileFragment extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
         initializeBloodGroupSpinner();
         getUserInfo();
-        initializeBloodGroupSpinner();
+//        initializeBloodGroupSpinner();
         updateProfileBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,7 +147,7 @@ public class ProfileFragment extends Fragment {
         progressDialog.setTitle("Uploading Image...");
         progressDialog.show();
         StorageReference profilePicRef = storageReference.child("profile_pics");
-        String imageDest=System.currentTimeMillis() + "." + getFileExtention(imageUri);
+        String imageDest = System.currentTimeMillis() + "." + getFileExtention(imageUri);
         profilePicRef.child(imageDest).putFile(imageUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
@@ -201,14 +202,21 @@ public class ProfileFragment extends Fragment {
         progressBar.setVisibility(View.INVISIBLE);
         Toast.makeText(getActivity().getApplicationContext(), "User Profile Updated", Toast.LENGTH_SHORT).show();
     }
+
     private void updateProfileActivity(String imageUrl) {
-        progressBar.setVisibility(View.VISIBLE);
-        getUpdatedValues();
-        UserProfile updatedProfile = new UserProfile(fullName, userEmail, phoneNumber, imageUrl, bloodGroup);
-        databaseReference.setValue(updatedProfile);
+        try {
+            progressBar.setVisibility(View.VISIBLE);
+            getUpdatedValues();
+            UserProfile updatedProfile = new UserProfile(fullName, userEmail, phoneNumber, imageUrl, bloodGroup);
+            databaseReference.setValue(updatedProfile);
+
+            Toast.makeText(getActivity().getApplicationContext(), "User Profile Updated", Toast.LENGTH_SHORT).show();
+        } catch (NullPointerException e) {
+
+        }
         progressBar.setVisibility(View.INVISIBLE);
-        Toast.makeText(getActivity().getApplicationContext(), "User Profile Updated", Toast.LENGTH_SHORT).show();
     }
+
     private void getUserInfo() {
         FirebaseUser user = auth.getCurrentUser();
         String userId = user.getUid();
@@ -235,14 +243,14 @@ public class ProfileFragment extends Fragment {
                 int spinnerPosition = adapter.getPosition(userProfileBloodGruop);
                 try {
                     bloodGroupSpinner.setText(bloodGroupSpinner.getAdapter().getItem(spinnerPosition).toString(), false);
-                }catch (Exception e){
+                } catch (Exception e) {
                 }
             }
             phoneNumberEditText.getEditText().setText(userProfile.getPhone());
             Picasso.get().load(userProfile.getProfilePic()).into(profilePicImageView);
             emailTextView.setText(userProfile.getEmail());
             progressBar.setVisibility(View.INVISIBLE);
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             Toast.makeText(getActivity(), "Null Pointer Exception.", Toast.LENGTH_SHORT).show();
         }
 

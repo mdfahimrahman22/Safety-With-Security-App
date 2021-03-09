@@ -60,6 +60,7 @@ public class HomeFragment extends Fragment implements LocationListener {
         getComponentIds(root);
         checkLocationPermission();
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        checkLocationPermission();
         Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
         onLocationChanged(location);
         policeStationsNearMeButton.setOnClickListener(new View.OnClickListener() {

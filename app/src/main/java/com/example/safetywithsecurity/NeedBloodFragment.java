@@ -16,6 +16,8 @@ import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -23,8 +25,11 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.example.safetywithsecurity.Models.NeedBlood;
 import com.example.safetywithsecurity.Models.UserProfile;
+import com.example.safetywithsecurity.ui.SpinnerAdapterText;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -38,45 +43,98 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.SimpleTimeZone;
 
 public class NeedBloodFragment extends Fragment {
-    TextInputEditText dateFormatEditText,timePickerEditText,needBloodContactTextField;
-    int year, day, month,hour,minute,amOrPm;
-    DatePickerDialog datePickerDialog;
-    TimePickerDialog timePickerDialog;
-    Calendar calendar;
+    private TextInputEditText needBloodLocationTextField,dateFormatEditText,timePickerEditText,needBloodContactTextField,needBloodShortNoteTextField;
+    TextInputLayout bloodGroup;
+    private int year, day, month,hour,minute;
+    private DatePickerDialog datePickerDialog;
+    private TimePickerDialog timePickerDialog;
+    private Calendar calendar;
     private FirebaseAuth auth;
     private DatabaseReference databaseReference;
-    UserProfile userProfile;
+    private UserProfile userProfile;
     private ProgressBar progressBar;
-    private void getComponentIds(View view) {
+    private Button postNeedBlood;
+    private TextView profileName;
+    private ImageView profileImage;
+    private SpinnerAdapterText adapter;
+    private AutoCompleteTextView bloodGroupSpinner;
+    String userId;
+    View view;
+    private void getComponentIds() {
         dateFormatEditText = view.findViewById(R.id.date_picker);
         timePickerEditText=view.findViewById(R.id.time_picker);
         needBloodContactTextField=view.findViewById(R.id.needBloodContactTextField);
-
+        postNeedBlood=view.findViewById(R.id.postNeedBlood);
+        needBloodShortNoteTextField=view.findViewById(R.id.needBloodShortNoteTextField);
+        bloodGroup=view.findViewById(R.id.bloodGroup);
+        needBloodLocationTextField=view.findViewById(R.id.needBloodLocationTextField);
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_need_blood, container, false);
-        getComponentIds(root);
-        progressBar=root.findViewById(R.id.progressBar);
+        view = inflater.inflate(R.layout.fragment_need_blood, container, false);
+        getComponentIds();
+        progressBar=view.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
+        initializeBloodGroupSpinner();
         auth = FirebaseAuth.getInstance();
-        getUserInfo(root);
+        getUserInfo();
 
         calendar = Calendar.getInstance();
         datePickerActivity();
         timePickerActivity();
-        return root;
+        postNeedBlood.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                needBloodActivity();
+            }
+        });
+
+        return view;
     }
 
-    private void getUserInfo(View view) {
+    private void needBloodActivity() {
+        progressBar.setVisibility(View.VISIBLE);
+        databaseReference = FirebaseDatabase.getInstance().getReference("NeedBlood/" + userId);
+        String userName=userProfile.getFullName();
+        String userImg=userProfile.getProfilePic();
+        String msg=needBloodShortNoteTextField.getText().toString();
+        String bloodGrp=bloodGroup.getEditText().getText().toString();
+        String date=dateFormatEditText.getText().toString();
+        String time=timePickerEditText.getText().toString();
+        String phoneNum=needBloodContactTextField.getText().toString();
+        String location=needBloodLocationTextField.getText().toString();
+        NeedBlood needBlood=new NeedBlood(userName,bloodGrp,phoneNum,userImg,msg,time,date,location);
+        databaseReference.setValue(needBlood);
+        progressBar.setVisibility(View.INVISIBLE);
+        Toast.makeText(getActivity().getApplicationContext(),
+                "Stay calm. Someone will help you soon.", Toast.LENGTH_SHORT).show();
+
+    }
+
+    private void initializeBloodGroupSpinner() {
+        ArrayList<String> bloodGroup = new ArrayList<>();
+        bloodGroup.add("A+");
+        bloodGroup.add("A-");
+        bloodGroup.add("B+");
+        bloodGroup.add("B-");
+        bloodGroup.add("AB+");
+        bloodGroup.add("AB-");
+        bloodGroup.add("O+");
+        bloodGroup.add("O-");
+        adapter = new SpinnerAdapterText(getActivity().getApplicationContext(), bloodGroup);
+        bloodGroupSpinner = view.findViewById(R.id.filledExposedDropdown);
+        bloodGroupSpinner.setAdapter(adapter);
+    }
+    private void getUserInfo() {
         FirebaseUser user=auth.getCurrentUser();
-        String userId=user.getUid();
+        userId=user.getUid();
 
         databaseReference = FirebaseDatabase.getInstance().getReference("Users/" + userId);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -100,8 +158,16 @@ public class NeedBloodFragment extends Fragment {
 
     private void setProfileInfo(View view) {
         try {
-            TextView profileName=view.findViewById(R.id.profileName);
-            ImageView profileImage=view.findViewById(R.id.profileImage);
+            profileName=view.findViewById(R.id.profileName);
+            profileImage=view.findViewById(R.id.profileImage);
+            String userProfileBloodGruop = userProfile.getBloodGruop();
+            if (userProfileBloodGruop != null) {
+                int spinnerPosition = adapter.getPosition(userProfileBloodGruop);
+                try {
+                    bloodGroupSpinner.setText(bloodGroupSpinner.getAdapter().getItem(spinnerPosition).toString(), false);
+                }catch (Exception e){
+                }
+            }
             needBloodContactTextField.setText(userProfile.getPhone());
             String nameAndBloodGroup=userProfile.getFullName();
             if(userProfile.getBloodGruop()!=null){
@@ -148,7 +214,6 @@ public class NeedBloodFragment extends Fragment {
             public void onClick(View v) {
                 hour=calendar.get(Calendar.HOUR_OF_DAY);
                 minute=calendar.get(Calendar.MINUTE);
-                amOrPm=calendar.get(Calendar.AM_PM);
                 timePickerDialog=new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
