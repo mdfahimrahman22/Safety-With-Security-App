@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
@@ -76,33 +77,39 @@ public class DonateBloodFragment extends Fragment {
         return view;
     }
 
-    List<NeedBlood> needBlood = new ArrayList<>();
+    List<NeedBlood> needBlood;
     MyListAdapter adapter;
-    RecyclerView need_blood_list;
+    RecyclerView needBloodListRecylerView;
 
     private void showListOfPeopleWhoNeedBlood() {
-        ProgressBar progressBar=view.findViewById(R.id.progressBar);
+        ProgressBar progressBar = view.findViewById(R.id.progressBar);
+        needBloodListRecylerView = view.findViewById(R.id.needBloodListRecylerView);
+
         progressBar.setVisibility(View.VISIBLE);
         databaseReference = FirebaseDatabase.getInstance().getReference("NeedBlood");
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                try {
+                    needBlood = new ArrayList<>();
+                    if (snapshot.exists()) {
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            NeedBlood needBloodObject = dataSnapshot.getValue(NeedBlood.class);
+                            needBlood.add(needBloodObject);
+                        }
 
-                if (snapshot.exists()) {
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        NeedBlood needBloodObject = dataSnapshot.getValue(NeedBlood.class);
-                        needBlood.add(needBloodObject);
-                        Log.d("donateBlood", needBloodObject.getUserName());
+                        adapter = new MyListAdapter(getActivity(),getActivity().getApplicationContext(), needBlood);
+                        needBloodListRecylerView.setHasFixedSize(true);
+                        needBloodListRecylerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+                        needBloodListRecylerView.setAdapter(adapter);
+                        progressBar.setVisibility(View.INVISIBLE);
+                        Toast.makeText(getActivity(),
+                                "Please try to help others who need blood.", Toast.LENGTH_SHORT).show();
                     }
-                    adapter = new MyListAdapter(getActivity().getApplicationContext(), needBlood);
-                    need_blood_list = view.findViewById(R.id.need_blood_list);
-                    need_blood_list.setAdapter(adapter);
-                    progressBar.setVisibility(View.INVISIBLE);
-                    Toast.makeText(getActivity().getApplicationContext(),
-                            "Please try to help others who need blood.", Toast.LENGTH_SHORT).show();
-                }else{
-                    Log.d("donateBlood", "snapshot.exists() is false");
+                } catch (NullPointerException npe) {
+
+
                 }
             }
 

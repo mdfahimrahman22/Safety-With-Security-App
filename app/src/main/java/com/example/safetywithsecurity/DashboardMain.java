@@ -18,8 +18,10 @@ import android.view.Menu;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.safetywithsecurity.Models.NeedBlood;
 import com.example.safetywithsecurity.Models.UserProfile;
 import com.example.safetywithsecurity.profile.LoginActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -30,6 +32,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -41,6 +44,7 @@ import com.squareup.picasso.Picasso;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
@@ -136,7 +140,6 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
             }
         });
     }
-
 
 
     private void sendEmergencyMessage() {

@@ -1,10 +1,11 @@
 package com.example.safetywithsecurity.Models;
 
 public class NeedBlood {
-   private String userName,bloodGrp,phoneNumber,userImg,message,time,date,location;
+   private String userName,bloodGrp,phoneNumber,userImg,message,time,date,location,userEmail;
 
-    public NeedBlood(String userName,String bloodGrp, String phoneNumber, String userImg, String message, String time, String date, String location) {
+    public NeedBlood(String userName,String userEmail,String bloodGrp, String phoneNumber, String userImg, String message, String time, String date, String location) {
         this.bloodGrp = bloodGrp;
+        this.userEmail=userEmail;
         this.phoneNumber = phoneNumber;
         this.userImg = userImg;
         this.message = message;
@@ -15,6 +16,14 @@ public class NeedBlood {
     }
 
     public NeedBlood() {
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
     public void setUserName(String userName) {

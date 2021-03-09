@@ -103,6 +103,7 @@ public class NeedBloodFragment extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
         databaseReference = FirebaseDatabase.getInstance().getReference("NeedBlood/" + userId);
         String userName=userProfile.getFullName();
+        String userEmail=userProfile.getEmail();
         String userImg=userProfile.getProfilePic();
         String msg=needBloodShortNoteTextField.getText().toString();
         String bloodGrp=bloodGroup.getEditText().getText().toString();
@@ -110,13 +111,14 @@ public class NeedBloodFragment extends Fragment {
         String time=timePickerEditText.getText().toString();
         String phoneNum=needBloodContactTextField.getText().toString();
         String location=needBloodLocationTextField.getText().toString();
-        NeedBlood needBlood=new NeedBlood(userName,bloodGrp,phoneNum,userImg,msg,time,date,location);
+        NeedBlood needBlood=new NeedBlood(userName,userEmail,bloodGrp,phoneNum,userImg,msg,time,date,location);
         databaseReference.setValue(needBlood);
         progressBar.setVisibility(View.INVISIBLE);
         Toast.makeText(getActivity().getApplicationContext(),
                 "Stay calm. Someone will help you soon.", Toast.LENGTH_SHORT).show();
 
     }
+
 
     private void initializeBloodGroupSpinner() {
         ArrayList<String> bloodGroup = new ArrayList<>();
