@@ -12,12 +12,10 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -27,14 +25,9 @@ import android.widget.Toast;
 
 import com.example.safetywithsecurity.Models.UserProfile;
 import com.example.safetywithsecurity.R;
-import com.example.safetywithsecurity.ui.SpinnerAdapterText;
-import com.google.android.gms.tasks.Continuation;
+import com.example.safetywithsecurity.Models.SpinnerAdapterText;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.wallet.callback.OnCompleteListener;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -49,17 +42,13 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-import java.io.File;
-import java.net.URI;
 import java.util.ArrayList;
-import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
 
 public class ProfileFragment extends Fragment {
 
     private DatabaseReference databaseReference;
-    private FirebaseDatabase firebaseDatabase;
     private FirebaseAuth auth;
     private ProgressBar progressBar;
     private UserProfile userProfile;

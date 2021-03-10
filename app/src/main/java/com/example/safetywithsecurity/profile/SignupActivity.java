@@ -10,7 +10,7 @@ import android.os.Bundle;
 import com.example.safetywithsecurity.Models.UserProfile;
 import com.example.safetywithsecurity.R;
 import com.example.safetywithsecurity.databinding.ActivitySignupBinding;
-import com.example.safetywithsecurity.ui.SpinnerAdapterText;
+import com.example.safetywithsecurity.Models.SpinnerAdapterText;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;

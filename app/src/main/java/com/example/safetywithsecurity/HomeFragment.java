@@ -1,4 +1,4 @@
-package com.example.safetywithsecurity.ui;
+package com.example.safetywithsecurity;
 
 import android.Manifest;
 import android.app.PendingIntent;
@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,16 +33,28 @@ import androidx.preference.EditTextPreference;
 import androidx.preference.PreferenceManager;
 
 import com.example.safetywithsecurity.DashboardMain;
+import com.example.safetywithsecurity.Models.UserProfile;
 import com.example.safetywithsecurity.R;
 import com.example.safetywithsecurity.SettingsFragment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class HomeFragment extends Fragment implements LocationListener {
-
+    private DatabaseReference databaseReference;
+    private FirebaseAuth auth;
     private CardView myLocationButton, hospitalButton, emergencyCallButton, emergencyMessageButton, securityCallButton, policeStationsNearMeButton, callAmbulanceButton, bloodDonateButton, needBloodButton;
     LocationManager locationManager;
     double myLatitude, myLongitude;
     Location location;
     boolean locationPermissionGranted;
+    UserProfile userProfile;
+    ProgressBar progressBar;
+
     private void getComponentIds(View view) {
         bloodDonateButton = view.findViewById(R.id.bloodDonateButton);
         needBloodButton = view.findViewById(R.id.needBloodButton);
@@ -54,18 +67,22 @@ public class HomeFragment extends Fragment implements LocationListener {
         bloodDonateButton = view.findViewById(R.id.bloodDonateButton);
         needBloodButton = view.findViewById(R.id.needBloodButton);
         hospitalButton = view.findViewById(R.id.myHospitalButton);
+        progressBar=view.findViewById(R.id.progressBar);
     }
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         getComponentIds(root);
-
+        auth = FirebaseAuth.getInstance();
+        getUserInfo();
+        FirebaseUser user = auth.getCurrentUser();
         checkLocationPermission();
-       if(locationPermissionGranted){
-           locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-           location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
-       }
+        if (locationPermissionGranted) {
+            locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+            location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
+        }
         onLocationChanged(location);
         policeStationsNearMeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,12 +137,36 @@ public class HomeFragment extends Fragment implements LocationListener {
         bloodDonateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
-                navController.navigate(R.id.nav_donate_blood);
+                if(userProfile!=null){
+                    Bundle bundle = new Bundle();
+                    bundle.putString("donateBloodUserEmail", userProfile.getEmail());
+                    bundle.putString("donateBloodUserName", userProfile.getFullName());
+                    NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+                    navController.navigate(R.id.nav_donate_blood,bundle);
+                }
             }
         });
 
         return root;
+    }
+
+    private void getUserInfo() {
+        progressBar.setVisibility(View.VISIBLE);
+        FirebaseUser user = auth.getCurrentUser();
+        String userId = user.getUid();
+        databaseReference = FirebaseDatabase.getInstance().getReference("Users/" + userId);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                userProfile = snapshot.getValue(UserProfile.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
     private void hospitalsNearMe() {
@@ -173,8 +214,8 @@ public class HomeFragment extends Fragment implements LocationListener {
     private void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
-        }else{
-            locationPermissionGranted=true;
+        } else {
+            locationPermissionGranted = true;
         }
     }
 
@@ -182,10 +223,10 @@ public class HomeFragment extends Fragment implements LocationListener {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == LOCATION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                locationPermissionGranted=true;
+                locationPermissionGranted = true;
                 return;
             } else {
-                locationPermissionGranted=false;
+                locationPermissionGranted = false;
             }
         }
     }
@@ -213,17 +254,16 @@ public class HomeFragment extends Fragment implements LocationListener {
     }
 
 
-
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        try{
-            if(locationPermissionGranted){
+        try {
+            if (locationPermissionGranted) {
                 myLatitude = location.getLatitude();
                 myLongitude = location.getLongitude();
-            }else {
+            } else {
                 checkLocationPermission();
             }
-        }catch (NullPointerException npe){
+        } catch (NullPointerException npe) {
 
         }
 

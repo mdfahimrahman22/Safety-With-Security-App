@@ -1,4 +1,4 @@
-package com.example.safetywithsecurity.ui;
+package com.example.safetywithsecurity.Models;
 
 import android.content.Context;
 import android.view.LayoutInflater;

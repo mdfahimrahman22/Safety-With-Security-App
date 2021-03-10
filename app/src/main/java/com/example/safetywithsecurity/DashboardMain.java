@@ -88,7 +88,6 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setItemIconTintList(null);
@@ -139,6 +138,7 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
                 }
             }
         });
+
     }
 
 
@@ -149,6 +149,7 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
 
         SharedPreferences sp;
         sp = PreferenceManager.getDefaultSharedPreferences(DashboardMain.this.getApplicationContext());
+
         String contactNumber = sp.getString("emergencyContact" , "999");
 
         String relation = sp.getString("contactRelation" , "Dear");
@@ -229,9 +230,6 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
         switch (id) {
             case R.id.action_settings:
                 navController.navigate(R.id.nav_settings);
-//                Intent intent = new Intent(DashboardMain.this, SettingsActivity.class);
-//                startActivity(intent);
-//                finish();
                 return true;
             case R.id.action_logout:
                 createLogoutPopupDialog();
@@ -243,7 +241,6 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.dashboard_main, menu);
         return true;
     }

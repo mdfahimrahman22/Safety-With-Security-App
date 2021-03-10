@@ -2,17 +2,12 @@ package com.example.safetywithsecurity;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 
-import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +22,7 @@ import android.widget.Toast;
 
 import com.example.safetywithsecurity.Models.NeedBlood;
 import com.example.safetywithsecurity.Models.UserProfile;
-import com.example.safetywithsecurity.ui.SpinnerAdapterText;
+import com.example.safetywithsecurity.Models.SpinnerAdapterText;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,14 +34,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.SimpleTimeZone;
 
 public class NeedBloodFragment extends Fragment {
     private TextInputEditText needBloodLocationTextField,dateFormatEditText,timePickerEditText,needBloodContactTextField,needBloodShortNoteTextField;
@@ -115,7 +106,7 @@ public class NeedBloodFragment extends Fragment {
         databaseReference.setValue(needBlood);
         progressBar.setVisibility(View.INVISIBLE);
         Toast.makeText(getActivity().getApplicationContext(),
-                "Stay calm. Someone will help you soon.", Toast.LENGTH_SHORT).show();
+                "Your Post has been Uploaded. Stay calm. Someone will help you soon.", Toast.LENGTH_LONG).show();
 
     }
 

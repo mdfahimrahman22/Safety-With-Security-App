@@ -18,6 +18,7 @@ public class NeedBlood {
     public NeedBlood() {
     }
 
+
     public String getUserEmail() {
         return userEmail;
     }
