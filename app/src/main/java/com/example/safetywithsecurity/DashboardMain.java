@@ -11,6 +11,9 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,6 +47,7 @@ import com.squareup.picasso.Picasso;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -78,6 +82,7 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
             actionBar.setBackgroundDrawable(drawable);
         }
 
+
         auth = FirebaseAuth.getInstance();
 
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -97,6 +102,7 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
                 R.id.nav_home, R.id.nav_profile, R.id.nav_logout)
                 .setDrawerLayout(drawer)
                 .build();
+
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
@@ -140,6 +146,7 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
         });
 
     }
+
 
 
     private void sendEmergencyMessage() {
@@ -242,6 +249,15 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.dashboard_main, menu);
+        for(int i=0;i<menu.size();i++){
+            MenuItem menuItem=menu.getItem(i);
+            SpannableString spannable=new SpannableString(
+              menu.getItem(i).getTitle().toString()
+            );
+            spannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.textColor)),
+                    0,spannable.length(),0);
+            menuItem.setTitle(spannable);
+        }
         return true;
     }
 

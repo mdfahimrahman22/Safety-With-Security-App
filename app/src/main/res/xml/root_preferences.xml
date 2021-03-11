@@ -41,10 +41,10 @@
             app:summaryOn="Notify me when someone needs blood"
             app:summaryOff="Not able to donate blood."/>
         <ListPreference
+            app:key="appTheme"
             app:defaultValue="light"
             app:entries="@array/theme_entries"
             app:entryValues="@array/theme_values"
-            app:key="appTheme"
             app:title="App Theme"
             app:icon="@drawable/ic_app_theme_settings_icon"
             app:useSimpleSummaryProvider="true" />

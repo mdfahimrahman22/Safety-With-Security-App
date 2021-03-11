@@ -45,7 +45,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:text="My Location"
-                        android:textColor="#6f6f6f"
+                        android:textColor="@color/textColor"
                         android:textSize="18sp" />
                 </LinearLayout>
 
@@ -77,8 +77,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:text="Emergency \nMessage"
-                        android:textColor="#6f6f6f"
                         android:textAlignment="center"
+                        android:textColor="@color/textColor"
                         android:textSize="18sp" />
                 </LinearLayout>
 
@@ -110,7 +110,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:text="Emergency Call"
-                        android:textColor="#6f6f6f"
+                        android:textColor="@color/textColor"
                         android:textSize="18sp" />
                 </LinearLayout>
 
@@ -142,7 +142,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:text="Security Call"
-                        android:textColor="#6f6f6f"
+                        android:textColor="@color/textColor"
                         android:textSize="18sp" />
                 </LinearLayout>
 
@@ -174,7 +174,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:text="Police Stations"
-                        android:textColor="#6f6f6f"
+                        android:textColor="@color/textColor"
                         android:textSize="18sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -205,7 +205,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:text="Blood Donate"
-                        android:textColor="#6f6f6f"
+                        android:textColor="@color/textColor"
                         android:textSize="18sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -236,7 +236,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:text="Need Blood"
-                        android:textColor="#6f6f6f"
+                        android:textColor="@color/textColor"
                         android:textSize="18sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -267,7 +267,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:text="Call Ambulance"
-                        android:textColor="#6f6f6f"
+                        android:textColor="@color/textColor"
                         android:textSize="18sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -299,7 +299,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:text="Near By Hospitals"
-                        android:textColor="#6f6f6f"
+                        android:textColor="@color/textColor"
                         android:textSize="18sp" />
                 </LinearLayout>
 

@@ -6,6 +6,7 @@
     android:layout_marginLeft="5dp"
     android:layout_marginTop="10dp"
     android:layout_marginRight="5dp"
+    android:background="@color/theme_background"
     android:orientation="horizontal">
 <LinearLayout
     android:id="@+id/linearLayout"
@@ -59,7 +60,8 @@
                 android:padding="2dp"
                 android:text="Name"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="#4d4d4d"
+                android:textColor="@color/textColor"
+                android:textColorHint="@color/textColor"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -69,6 +71,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:text="Blood Group"
+                android:textColor="@color/textColor"
+                android:textColorHint="@color/textColor"
                 android:textSize="18sp" />
         </LinearLayout>
 
@@ -87,6 +91,8 @@
                 android:layout_height="wrap_content"
                 android:text="Mar 11, 2021"
                 android:textAlignment="center"
+                android:textColor="@color/textColor"
+                android:textColorHint="@color/textColor"
                 android:textSize="14sp" />
 
             <TextView
@@ -95,6 +101,8 @@
                 android:layout_height="wrap_content"
                 android:text="8:17:09 PM"
                 android:textAlignment="center"
+                android:textColor="@color/textColor"
+                android:textColorHint="@color/textColor"
                 android:textSize="14sp" />
         </LinearLayout>
 

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".profile.LoginActivity"
     android:orientation="vertical"
-    android:background="#fff"
+    android:background="@color/theme_background"
     android:gravity="center"
     android:padding="20dp">
     <ScrollView
@@ -63,7 +63,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Blood Group:"
-                    android:textColor="@color/black"
+                    android:textColor="@color/textColor"
+                    android:textColorHint="@color/textColor"
                     android:textSize="18sp" />
 
                 <com.google.android.material.textview.MaterialTextView
@@ -72,6 +73,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:text="B+"
+                    android:textColor="@color/textColor"
+                    android:textColorHint="@color/textColor"
                     android:textSize="18sp" />
             </LinearLayout>
 
@@ -86,7 +89,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Date:"
-                    android:textColor="@color/black"
+                    android:textColor="@color/textColor"
+                    android:textColorHint="@color/textColor"
                     android:textSize="18sp" />
 
                 <com.google.android.material.textview.MaterialTextView
@@ -95,6 +99,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:text="5/5/21"
+                    android:textColor="@color/textColor"
+                    android:textColorHint="@color/textColor"
                     android:textSize="18sp" />
             </LinearLayout>
 
@@ -109,7 +115,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Time:"
-                    android:textColor="@color/black"
+                    android:textColor="@color/textColor"
+                    android:textColorHint="@color/textColor"
                     android:textSize="18sp" />
 
                 <com.google.android.material.textview.MaterialTextView
@@ -118,6 +125,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:text="5/5/21"
+                    android:textColor="@color/textColor"
+                    android:textColorHint="@color/textColor"
                     android:textSize="18sp" />
             </LinearLayout>
 
@@ -132,7 +141,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Location:"
-                    android:textColor="@color/black"
+                    android:textColor="@color/textColor"
+                    android:textColorHint="@color/textColor"
                     android:textSize="18sp" />
 
                 <com.google.android.material.textview.MaterialTextView
@@ -140,6 +150,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="29, Nexus Hospital Building, Dhaka-Mymensingh Rd, Mymensingh 2200"
+                    android:textColor="@color/textColor"
+                    android:textColorHint="@color/textColor"
                     android:textSize="18sp" />
             </LinearLayout>
 
@@ -154,7 +166,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Message:"
-                    android:textColor="@color/black"
+                    android:textColor="@color/textColor"
+                    android:textColorHint="@color/textColor"
                     android:textSize="18sp" />
 
                 <com.google.android.material.textview.MaterialTextView
@@ -162,6 +175,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="“There is no great joy than saving a soul.”"
+                    android:textColor="@color/textColor"
+                    android:textColorHint="@color/textColor"
                     android:textSize="18sp" />
             </LinearLayout>
 

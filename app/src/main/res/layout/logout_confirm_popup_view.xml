@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".profile.LoginActivity"
     android:orientation="vertical"
-    android:background="#fff"
+    android:background="@color/background"
     android:gravity="center"
     android:padding="20dp">
     <ScrollView

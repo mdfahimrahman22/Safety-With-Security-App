@@ -47,20 +47,21 @@ public class LoginActivity extends AppCompatActivity {
     private GoogleSignInOptions gso;
     FirebaseUser user;
     private ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         auth = FirebaseAuth.getInstance();
-        database= FirebaseDatabase.getInstance();
+        database = FirebaseDatabase.getInstance();
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        progressBar=binding.progressBar;
+        progressBar = binding.progressBar;
         progressBar.setVisibility(View.INVISIBLE);
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-        mGoogleSignInClient= GoogleSignIn.getClient(this,gso);
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         binding.googleLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,30 +110,35 @@ public class LoginActivity extends AppCompatActivity {
 
 
     }
-    int RC_SIGN_IN=65;
+
+    int RC_SIGN_IN = 65;
+
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 Log.d("TAG", "firebaseAuthWithGoogle:" + account.getId());
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
-                // Google Sign In failed, update UI appropriately
-                Log.w("TAG", "Google sign in failed", e);
-                // ...
+                String error="Error:"+e.getMessage()+"Occurred";
+                if (error.equals("Error:7: Occurred")) {
+                    Toast.makeText(LoginActivity.this, "Internet Connection Failed. Check Your Internet Connection.", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
+
     private void firebaseAuthWithGoogle(String idToken) {
         progressBar.setVisibility(View.VISIBLE);
         database = FirebaseDatabase.getInstance();
@@ -151,8 +157,8 @@ public class LoginActivity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     UserProfile userProfile = snapshot.getValue(UserProfile.class);
-                                    if(userProfile==null){
-                                        UserProfile users=new UserProfile();
+                                    if (userProfile == null) {
+                                        UserProfile users = new UserProfile();
                                         users.setUserId(user.getUid());
                                         users.setProfilePic(user.getPhotoUrl().toString());
                                         users.setFullName(user.getDisplayName());
@@ -161,6 +167,7 @@ public class LoginActivity extends AppCompatActivity {
                                         database.getReference("Users").child(user.getUid()).setValue(users);
                                     }
                                 }
+
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
 
@@ -176,7 +183,6 @@ public class LoginActivity extends AppCompatActivity {
                             // If sign in fails, display a message to the user.
                             Log.w("TAG", "signInWithCredential:failure", task.getException());
                             Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                            Snackbar.make(binding.getRoot(), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
 //                            updateUI(null);
                         }
 
@@ -184,6 +190,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
     }
+
     void loginToSignupScreenTransition() {
         ImageView image;
         TextView welcomeText, logo_desc;
@@ -207,6 +214,7 @@ public class LoginActivity extends AppCompatActivity {
         ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(LoginActivity.this, pairs);
         startActivity(intent, options.toBundle());
     }
+
     @Override
     public void onBackPressed() {
         finish();
