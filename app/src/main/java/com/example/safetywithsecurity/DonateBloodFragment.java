@@ -97,8 +97,8 @@ public class DonateBloodFragment extends Fragment {
                                 "Please try to help others who need blood.", Toast.LENGTH_SHORT).show();
                     }
                 } catch (NullPointerException | ParseException npe) {
-                    Toast.makeText(view.getContext(),
-                            "Can't get data from server.", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(view.getContext(),
+//                            "Can't get data from server.", Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.INVISIBLE);
                 }
                 if(needBlood.size()==0){

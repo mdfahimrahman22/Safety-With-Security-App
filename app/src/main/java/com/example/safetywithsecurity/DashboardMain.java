@@ -11,7 +11,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
@@ -19,12 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.safetywithsecurity.Models.NeedBlood;
 import com.example.safetywithsecurity.Models.UserProfile;
 import com.example.safetywithsecurity.profile.LoginActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -32,23 +27,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
@@ -72,12 +55,13 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
     NavController navController;
 
     double myLatitude, myLongitude;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard_main);
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null) {
+        if (actionBar != null) {
             Drawable drawable = getResources().getDrawable(R.color.theme_color);
             actionBar.setBackgroundDrawable(drawable);
         }
@@ -89,7 +73,7 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-        mGoogleSignInClient= GoogleSignIn.getClient(this,gso);
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -139,6 +123,14 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
                         createLogoutPopupDialog();
                         drawer.closeDrawer(GravityCompat.START);
                         return true;
+                    case R.id.nav_share:
+                        shareAppLink();
+                        drawer.closeDrawer(GravityCompat.START);
+                        return true;
+                    case R.id.nav_rate:
+                        createRateUsPopupDialog();
+                        drawer.closeDrawer(GravityCompat.START);
+                        return true;
                     default:
                         return false;
                 }
@@ -147,6 +139,16 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
 
     }
 
+    public void shareAppLink() {
+        String shareBody = "Application Link : https://play.google.com/store/apps/details?id=" + getApplicationContext().getPackageName();
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_SUBJECT, "App link");
+        sendIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+        sendIntent.setType("text/plain");
+        Intent.createChooser(sendIntent, "Share via");
+        startActivity(sendIntent);
+    }
 
 
     private void sendEmergencyMessage() {
@@ -157,12 +159,12 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
         SharedPreferences sp;
         sp = PreferenceManager.getDefaultSharedPreferences(DashboardMain.this.getApplicationContext());
 
-        String contactNumber = sp.getString("emergencyContact" , "999");
+        String contactNumber = sp.getString("emergencyContact", "999");
 
-        String relation = sp.getString("contactRelation" , "Dear");
+        String relation = sp.getString("contactRelation", "Dear");
 
         smsIntent.putExtra("address", new String(contactNumber));
-        smsIntent.putExtra("sms_body", "Hi "+relation+"\nI am in danger. Please find me in this location: https://www.google.com/maps/?q=" + myLatitude + "," + myLongitude);
+        smsIntent.putExtra("sms_body", "Hi " + relation + "\nI am in danger. Please find me in this location: https://www.google.com/maps/?q=" + myLatitude + "," + myLongitude);
 
         try {
             startActivity(smsIntent);
@@ -173,6 +175,7 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
                     "SMS faild, please try again later.", Toast.LENGTH_SHORT).show();
         }
     }
+
     private void policeStationsNearMe() {
         Uri uri = Uri.parse("geo:0, 0?q=Police Stations Near Me");
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
@@ -182,7 +185,7 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
 
     private void securityCall() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(DashboardMain.this.getApplicationContext());
-        String securityNumber = sharedPreferences.getString("securityNumber" , "999");
+        String securityNumber = sharedPreferences.getString("securityNumber", "999");
         Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", securityNumber, null));
         startActivity(intent);
     }
@@ -190,11 +193,20 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
     private void emergencyCall() {
         SharedPreferences sp;
         sp = PreferenceManager.getDefaultSharedPreferences(DashboardMain.this.getApplicationContext());
-        String contactNumber = sp.getString("emergencyContact" , "999");
+        String contactNumber = sp.getString("emergencyContact", "999");
         Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", contactNumber, null));
         startActivity(intent);
     }
 
+    public void createRateUsPopupDialog() {
+        AlertDialog.Builder dialogBuilder;
+        AlertDialog dialog;
+        dialogBuilder = new AlertDialog.Builder(DashboardMain.this);
+        final View logoutConfirmPopupView = getLayoutInflater().inflate(R.layout.rate_us_layout, null);
+        dialogBuilder.setView(logoutConfirmPopupView);
+        dialog = dialogBuilder.create();
+        dialog.show();
+    }
 
     public void createLogoutPopupDialog() {
         AlertDialog.Builder dialogBuilder;
@@ -229,6 +241,12 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
                 dialog.dismiss();
             }
         });
+        logoutConfirmPopupView.findViewById(R.id.closeBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
     }
 
     @Override
@@ -249,13 +267,13 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.dashboard_main, menu);
-        for(int i=0;i<menu.size();i++){
-            MenuItem menuItem=menu.getItem(i);
-            SpannableString spannable=new SpannableString(
-              menu.getItem(i).getTitle().toString()
+        for (int i = 0; i < menu.size(); i++) {
+            MenuItem menuItem = menu.getItem(i);
+            SpannableString spannable = new SpannableString(
+                    menu.getItem(i).getTitle().toString()
             );
             spannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.textColor)),
-                    0,spannable.length(),0);
+                    0, spannable.length(), 0);
             menuItem.setTitle(spannable);
         }
         return true;
@@ -267,6 +285,7 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+
     int LOCATION_REQUEST_CODE = 100;
 
     private void checkLocationPermission() {
@@ -285,6 +304,7 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
             }
         }
     }
+
     @Override
     public void onLocationChanged(@NonNull Location location) {
         myLatitude = location.getLatitude();
