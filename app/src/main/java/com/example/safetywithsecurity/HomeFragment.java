@@ -54,6 +54,8 @@ public class HomeFragment extends Fragment implements LocationListener {
     boolean locationPermissionGranted;
     UserProfile userProfile;
     ProgressBar progressBar;
+    FirebaseUser user;
+    String userId;
 
     private void getComponentIds(View view) {
         bloodDonateButton = view.findViewById(R.id.bloodDonateButton);
@@ -76,6 +78,8 @@ public class HomeFragment extends Fragment implements LocationListener {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         getComponentIds(root);
         auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        userId = user.getUid();
         getUserInfo();
         FirebaseUser user = auth.getCurrentUser();
         checkLocationPermission();
@@ -152,8 +156,6 @@ public class HomeFragment extends Fragment implements LocationListener {
 
     private void getUserInfo() {
         progressBar.setVisibility(View.VISIBLE);
-        FirebaseUser user = auth.getCurrentUser();
-        String userId = user.getUid();
         databaseReference = FirebaseDatabase.getInstance().getReference("Users/" + userId);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

@@ -143,9 +143,30 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
                         createRateUsPopupDialog();
                         drawer.closeDrawer(GravityCompat.START);
                         return true;
+                    case R.id.nav_aboutus:
+                        createAboutUsPopupDialog();
+                        drawer.closeDrawer(GravityCompat.START);
+                        return true;
                     default:
                         return false;
                 }
+            }
+        });
+
+    }
+
+    private void createAboutUsPopupDialog() {
+        AlertDialog.Builder dialogBuilder;
+        AlertDialog dialog;
+        dialogBuilder = new AlertDialog.Builder(DashboardMain.this);
+        final View aboutUsPopupView = getLayoutInflater().inflate(R.layout.about_us_layout, null);
+        dialogBuilder.setView(aboutUsPopupView);
+        dialog = dialogBuilder.create();
+        dialog.show();
+        aboutUsPopupView.findViewById(R.id.closeBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
             }
         });
 
@@ -218,13 +239,13 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
         AlertDialog.Builder dialogBuilder;
         AlertDialog dialog;
         dialogBuilder = new AlertDialog.Builder(DashboardMain.this);
-        final View rateUsConfirmPopupView = getLayoutInflater().inflate(R.layout.rate_us_layout, null);
-        dialogBuilder.setView(rateUsConfirmPopupView);
+        final View rateUsPopupView = getLayoutInflater().inflate(R.layout.rate_us_layout, null);
+        dialogBuilder.setView(rateUsPopupView);
         dialog = dialogBuilder.create();
         dialog.show();
-        ratingBar = rateUsConfirmPopupView.findViewById(R.id.ratingBar);
-        feedbackTextInput= rateUsConfirmPopupView.findViewById(R.id.feedback);
-        rateUsConfirmPopupView.findViewById(R.id.submitBtn).setOnClickListener(new View.OnClickListener() {
+        ratingBar = rateUsPopupView.findViewById(R.id.ratingBar);
+        feedbackTextInput= rateUsPopupView.findViewById(R.id.feedback);
+        rateUsPopupView.findViewById(R.id.submitBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String feedback = feedbackTextInput.getText().toString();
