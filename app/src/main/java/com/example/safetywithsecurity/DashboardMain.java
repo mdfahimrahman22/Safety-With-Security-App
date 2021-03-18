@@ -18,8 +18,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
+import android.widget.RatingBar;
 import android.widget.Toast;
 
+import com.example.safetywithsecurity.Models.CustomToast;
+import com.example.safetywithsecurity.Models.RateUs;
 import com.example.safetywithsecurity.Models.UserProfile;
 import com.example.safetywithsecurity.profile.LoginActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -28,7 +31,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -44,6 +52,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.preference.PreferenceManager;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class DashboardMain extends AppCompatActivity implements LocationListener {
 
     public static UserProfile userProfile;
@@ -51,8 +62,9 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
     private FirebaseAuth auth;
     private GoogleSignInClient mGoogleSignInClient;
     private GoogleSignInOptions gso;
-
+    FirebaseUser user;
     NavController navController;
+    DatabaseReference databaseReference;
 
     double myLatitude, myLongitude;
 
@@ -66,9 +78,9 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
             actionBar.setBackgroundDrawable(drawable);
         }
 
-
+        databaseReference = FirebaseDatabase.getInstance().getReference();
         auth = FirebaseAuth.getInstance();
-
+        user = auth.getCurrentUser();
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -199,13 +211,32 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
     }
 
     public void createRateUsPopupDialog() {
+        RatingBar ratingBar;
+        TextInputEditText feedbackTextInput;
+        SimpleDateFormat myDateFormat = new SimpleDateFormat("MMM d, y");
+        Date date=new Date();
         AlertDialog.Builder dialogBuilder;
         AlertDialog dialog;
         dialogBuilder = new AlertDialog.Builder(DashboardMain.this);
-        final View logoutConfirmPopupView = getLayoutInflater().inflate(R.layout.rate_us_layout, null);
-        dialogBuilder.setView(logoutConfirmPopupView);
+        final View rateUsConfirmPopupView = getLayoutInflater().inflate(R.layout.rate_us_layout, null);
+        dialogBuilder.setView(rateUsConfirmPopupView);
         dialog = dialogBuilder.create();
         dialog.show();
+        ratingBar = rateUsConfirmPopupView.findViewById(R.id.ratingBar);
+        feedbackTextInput= rateUsConfirmPopupView.findViewById(R.id.feedback);
+        rateUsConfirmPopupView.findViewById(R.id.submitBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String feedback = feedbackTextInput.getText().toString();
+                String rating = Float.toString(ratingBar.getRating());
+                RateUs rateUs = new RateUs(user.getDisplayName(), rating,feedback,myDateFormat.format(date));
+                databaseReference.child("RateUs").child(user.getUid()).setValue(rateUs);
+                CustomToast.customToast(getApplicationContext(),"Thank You.","Your good wishes have gone a long way in  making us want to do even better.",R.drawable.ic_happy_icon);
+                dialog.dismiss();
+            }
+        });
+
+
     }
 
     public void createLogoutPopupDialog() {
