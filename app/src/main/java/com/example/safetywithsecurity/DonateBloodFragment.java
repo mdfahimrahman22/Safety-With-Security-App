@@ -81,7 +81,6 @@ public class DonateBloodFragment extends Fragment {
                             Date needBloodDate = formatter.parse(sDate);
                             Date currentDate = formatter.parse(formatter.format(new Date()));
                             if (currentDate.compareTo(needBloodDate) > 0) {
-                                Log.d("donateBlood", "Deleted data:"+needBloodObject.getUserName());
                                 deleteData.child(dataSnapshot.getKey()).removeValue();
                             } else {
                                 needBlood.add(needBloodObject);

@@ -3,6 +3,10 @@ package com.example.safetywithsecurity;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -10,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -18,10 +23,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.example.safetywithsecurity.Models.CustomToast;
+import com.example.safetywithsecurity.Models.MyListAdapter;
+import com.example.safetywithsecurity.Models.NeedBlood;
 import com.example.safetywithsecurity.Models.RateUs;
 import com.example.safetywithsecurity.Models.UserProfile;
 import com.example.safetywithsecurity.profile.LoginActivity;
@@ -34,13 +42,18 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
@@ -51,9 +64,14 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class DashboardMain extends AppCompatActivity implements LocationListener {
 
@@ -65,7 +83,7 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
     FirebaseUser user;
     NavController navController;
     DatabaseReference databaseReference;
-
+    List<NeedBlood> needBlood;
     double myLatitude, myLongitude;
 
     @Override
@@ -152,7 +170,66 @@ public class DashboardMain extends AppCompatActivity implements LocationListener
                 }
             }
         });
+        listOfPeopleWhoNeedBlood();
 
+    }
+
+    private void donateBloodNotification(int totalNumOfPeopleWhoNeedBlood) {
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+            NotificationChannel channel=new NotificationChannel("DonateBlood Notification","DonateBlood Notification",NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationManager manager=getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
+
+        NotificationCompat.Builder builder=new NotificationCompat.Builder(DashboardMain.this,"DonateBlood Notification");
+        builder.setContentTitle("Need Blood");
+        builder.setContentText("Hello "+user.getDisplayName()+",");
+        builder.setSmallIcon(R.drawable.ic_notification_icon);
+        builder.setAutoCancel(true);
+        builder.setStyle(new NotificationCompat.BigTextStyle()
+                .bigText("There are "+totalNumOfPeopleWhoNeedBlood+" people who badly need blood."));
+        NotificationManagerCompat managerCompat=NotificationManagerCompat.from(DashboardMain.this);
+        managerCompat.notify(1,builder.build());
+    }
+
+    
+
+    private void listOfPeopleWhoNeedBlood() {
+        SimpleDateFormat formatter = new SimpleDateFormat("MMM d, y");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("NeedBlood");
+        DatabaseReference deleteData = FirebaseDatabase.getInstance().getReference("NeedBlood");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                try {
+                    needBlood = new ArrayList<>();
+                    if (snapshot.exists()) {
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            NeedBlood needBloodObject = dataSnapshot.getValue(NeedBlood.class);
+                            String sDate = needBloodObject.getDate();
+                            Date needBloodDate = formatter.parse(sDate);
+                            Date currentDate = formatter.parse(formatter.format(new Date()));
+                            if (currentDate.compareTo(needBloodDate) > 0) {
+                                deleteData.child(dataSnapshot.getKey()).removeValue();
+                            } else {
+                                needBlood.add(needBloodObject);
+                            }
+                        }
+                        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(DashboardMain.this.getApplicationContext());
+                        if (needBlood.size()>0&&sp.getBoolean("bloodNeedNotify",false)){
+                            donateBloodNotification(needBlood.size());
+                        }
+
+//                        Log.d("bloodNeedNotify","People who need blood:"+totalNumOfPeopleWhoNeedBlood);
+                    }
+                } catch (NullPointerException | ParseException npe) {
+
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
     }
 
     private void createAboutUsPopupDialog() {
