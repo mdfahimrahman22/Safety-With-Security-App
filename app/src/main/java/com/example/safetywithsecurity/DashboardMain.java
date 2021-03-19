@@ -28,7 +28,6 @@ import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.example.safetywithsecurity.Models.CustomToast;
-import com.example.safetywithsecurity.Models.MyListAdapter;
 import com.example.safetywithsecurity.Models.NeedBlood;
 import com.example.safetywithsecurity.Models.RateUs;
 import com.example.safetywithsecurity.Models.UserProfile;

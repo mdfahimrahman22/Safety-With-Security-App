@@ -23,12 +23,12 @@
             app:summaryOn="National Security Number Updated."
             app:icon="@drawable/ic_police_call"
             app:useSimpleSummaryProvider="true" />
-        <EditTextPreference
-            app:key="ambulanceNumber"
-            app:title="Add Ambulance Number"
-            app:summaryOn="Ambulance Number Updated."
-            app:icon="@drawable/ic_ambulance_icon"
-            app:useSimpleSummaryProvider="true" />
+<!--        <EditTextPreference-->
+<!--            app:key="ambulanceNumber"-->
+<!--            app:title="Add Ambulance Number"-->
+<!--            app:summaryOn="Ambulance Number Updated."-->
+<!--            app:icon="@drawable/ic_ambulance_icon"-->
+<!--            app:useSimpleSummaryProvider="true" />-->
 
     </PreferenceCategory>
 
