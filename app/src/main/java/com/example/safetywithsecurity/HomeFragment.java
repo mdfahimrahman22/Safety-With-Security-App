@@ -1,6 +1,7 @@
 package com.example.safetywithsecurity;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -31,8 +32,12 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.preference.EditTextPreference;
 import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.safetywithsecurity.DashboardMain;
+import com.example.safetywithsecurity.Models.AmbulanceDetails;
+import com.example.safetywithsecurity.Models.AmbulanceListAdapter;
 import com.example.safetywithsecurity.Models.UserProfile;
 import com.example.safetywithsecurity.R;
 import com.example.safetywithsecurity.SettingsFragment;
@@ -43,6 +48,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONArray;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomeFragment extends Fragment implements LocationListener {
     private DatabaseReference databaseReference;
@@ -56,6 +69,7 @@ public class HomeFragment extends Fragment implements LocationListener {
     ProgressBar progressBar;
     FirebaseUser user;
     String userId;
+    View view;
 
     private void getComponentIds(View view) {
         bloodDonateButton = view.findViewById(R.id.bloodDonateButton);
@@ -69,14 +83,14 @@ public class HomeFragment extends Fragment implements LocationListener {
         bloodDonateButton = view.findViewById(R.id.bloodDonateButton);
         needBloodButton = view.findViewById(R.id.needBloodButton);
         hospitalButton = view.findViewById(R.id.myHospitalButton);
-        progressBar=view.findViewById(R.id.progressBar);
+        progressBar = view.findViewById(R.id.progressBar);
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
-        getComponentIds(root);
+        view = inflater.inflate(R.layout.fragment_home, container, false);
+        getComponentIds(view);
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         userId = user.getUid();
@@ -141,17 +155,17 @@ public class HomeFragment extends Fragment implements LocationListener {
         bloodDonateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(userProfile!=null){
+                if (userProfile != null) {
                     Bundle bundle = new Bundle();
                     bundle.putString("donateBloodUserEmail", userProfile.getEmail());
                     bundle.putString("donateBloodUserName", userProfile.getFullName());
                     NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
-                    navController.navigate(R.id.nav_donate_blood,bundle);
+                    navController.navigate(R.id.nav_donate_blood, bundle);
                 }
             }
         });
 
-        return root;
+        return view;
     }
 
     private void getUserInfo() {
@@ -178,12 +192,33 @@ public class HomeFragment extends Fragment implements LocationListener {
         startActivity(intent);
     }
 
+    RecyclerView ambulanceListRecylerView;
+    AmbulanceListAdapter ambulanceListAdapter;
+    List<AmbulanceDetails> ambulanceDetailsList = new ArrayList<>();
+    String jsonString="[{\"ambulanceServiceName\":\"Ambulance 1\",\"currentLocation\":\"Location 1\",\"arrivalTime\":\"45min\",\"phoneNum\":\"01790273456\"},{\"ambulanceServiceName\":\"Ambulance 2\",\"currentLocation\":\"Location 2\",\"arrivalTime\":\"1hour\",\"phoneNum\":\"01990223456\"}]";
+
     private void callAmbulance() {
-        SharedPreferences sp;
-        sp = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String ambulanceNumber = sp.getString("ambulanceNumber", "999");
-        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", ambulanceNumber, null));
-        startActivity(intent);
+        AlertDialog.Builder dialogBuilder;
+        AlertDialog dialog;
+        dialogBuilder = new AlertDialog.Builder(getActivity());
+        final View ambulanceListPopupView = getLayoutInflater().inflate(R.layout.ambulance_list_popup_view, null);
+        dialogBuilder.setView(ambulanceListPopupView);
+        dialog = dialogBuilder.create();
+        progressBar = ambulanceListPopupView.findViewById(R.id.progressBar);
+        ambulanceListRecylerView = ambulanceListPopupView.findViewById(R.id.ambulanceListRecylerView);
+
+        Gson gson = new Gson();
+        Type type = new TypeToken<List<AmbulanceDetails>>(){}.getType();
+        ambulanceDetailsList = gson.fromJson(jsonString, type);
+//        ambulanceDetailsList.add(new AmbulanceDetails("Name1", "Location1", "45min", "01790273456"));
+//        ambulanceDetailsList.add(new AmbulanceDetails("Name2", "Location2", "1hour", "01790273456"));
+
+        ambulanceListAdapter = new AmbulanceListAdapter(ambulanceDetailsList);
+        ambulanceListRecylerView.setHasFixedSize(true);
+        ambulanceListRecylerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+        ambulanceListRecylerView.setAdapter(ambulanceListAdapter);
+
+        dialog.show();
     }
 
     private void sendEmergencyMessage() {
