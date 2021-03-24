@@ -138,6 +138,7 @@ public class SignupActivity extends AppCompatActivity {
         bloodGroup.add("B");
         bloodGroup.add("B+");
         bloodGroup.add("O-");
+        bloodGroup.add("O+");
         SpinnerAdapterText adapter = new SpinnerAdapterText(getApplicationContext(), bloodGroup);
         bloodGroupSpinner = findViewById(R.id.filledExposedDropdown);
         bloodGroupSpinner.setAdapter(adapter);
