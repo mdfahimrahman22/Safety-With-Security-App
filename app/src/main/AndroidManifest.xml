@@ -26,7 +26,8 @@
 
         <activity
             android:name=".SplashScreen"
-            android:theme="@style/Theme.SafetyWithSecurity.NoActionBar">
+            android:theme="@style/Theme.SafetyWithSecurity.NoActionBar"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -38,11 +38,10 @@ public class SpinnerAdapterText extends ArrayAdapter<String> {
         }
 
         TextView textViewName = convertView.findViewById(R.id.spinner_layout_text_view);
-        textViewName.setTextColor(getContext().getResources().getColor(R.color.textColor));
+        textViewName.setTextColor(getContext().getResources().getColor(R.color.black));
         String currentItem = getItem(position);
         if (currentItem != null) {
             textViewName.setText(currentItem);
-
         }
         return convertView;
     }
